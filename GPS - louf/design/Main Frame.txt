@@ -1,0 +1,11 @@
+Application Main Frame
+
+The entire application will fill a single window. At the start, the window will display
+a map(should be centered on user location). There will be a menu bar on the top of the window,
+and from there the user can choose to enter starting/destination selection. When the user chooses
+the starting/destination selection, the window will have another JPanel with two textinputs
+each with an enter input button next to the input. When the user presses an enter input 
+button, a popup window will appear, asking if the user would like to enter the coordinates
+or click on the map. After enter both locations, and pressing a route button, the map will zoom out to
+fit the entire route. A "Start Driving" button will be active under the route button, and after pressing it, the GPS will
+start navigations.

@@ -1,0 +1,29 @@
+Zoom
+1. User uses mouse scroll wheel to zoom in and out
+
+Pan
+1. User clicks and holds the left mouse button to move the map
+
+Selection of Starting and Ending Locations
+1. User will see two input rows with a button on each side that says enter location
+2. User selects whether to enter location by coordinates, or by placing point on map
+3. If user selects to enter coordinates, user types in coordinate pair
+4. If user selects to place point on map, user drags map to point and places mark on map.
+5. Repeat for end location
+
+Getting Directions
+1. User has gone through Selection of Starting and Ending Locations
+2. User selects to get directions
+3. GPS displays full route
+
+Activating "Drive There" Mode
+1. User has gone through getting directions
+2. User presses button to start navigation.
+3. GPS focuses on current location and rotates the map based on current user direction
+
+Production of "Off Course" indications
+1. User is in "Drive There" mode
+2. User strays off the given course by either a set distance from closest point in the route
+or user is recognized to be on a different way than shown
+3. GPS shows off course indication
+4. GPS shows rerouting indication, gives new route from current location to destination
