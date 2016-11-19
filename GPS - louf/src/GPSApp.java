@@ -36,16 +36,16 @@ public class GPSApp{
 	content.add(mapPanel, BorderLayout.CENTER);
 	
 	//Initialize and add list to left side
-	String[] listData = new String[map.getNameList().size()];	//Should be alphabetized
-	listData = map.getNameList().toArray(listData);
-	
-	wayList = new JList<String>(listData);
-	wayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	wayList.setLayoutOrientation(JList.VERTICAL);
-	
-	JScrollPane wayListScroller = new JScrollPane(wayList);
-	wayListScroller.setPreferredSize(new Dimension(250, 600));
-	content.add(wayListScroller, BorderLayout.WEST);
+//	String[] listData = new String[map.getNameList().size()];	//Should be alphabetized
+//	listData = map.getNameList().toArray(listData);
+//	
+//	wayList = new JList<String>(listData);
+//	wayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//	wayList.setLayoutOrientation(JList.VERTICAL);
+//	
+//	JScrollPane wayListScroller = new JScrollPane(wayList);
+//	wayListScroller.setPreferredSize(new Dimension(250, 600));
+//	content.add(wayListScroller, BorderLayout.WEST);
 	
 	mainFrame.pack();
 	mainFrame.setVisible(true);

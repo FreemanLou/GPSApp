@@ -5,13 +5,12 @@ import java.util.*;
  * Represents a GPS node
  * 
  */
-public class Node extends GPSObject {
+public class GPSNode extends GPSObject implements GraphNode {
     private double latitude;
     private double longitude;
     
-    public Node(double latitude, double longitude, String user, String uid, String id, boolean visible, String version,
-	    String changeSet, String timeStamp) {
-	super(user, uid, id, visible, version, changeSet, timeStamp);
+    public GPSNode(double latitude, double longitude, String id, boolean visible) {
+	super(id, visible);
 	
 	this.longitude = longitude;
 	this.latitude = latitude;
@@ -57,7 +56,7 @@ public class Node extends GPSObject {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	Node other = (Node) obj;
+	GPSNode other = (GPSNode) obj;
 	if (Double.doubleToLongBits(latitude) != Double
 		.doubleToLongBits(other.latitude))
 	    return false;
@@ -77,20 +76,10 @@ public class Node extends GPSObject {
 	builder.append(latitude);
 	builder.append(", longitude=");
 	builder.append(longitude);
-	builder.append(", user=");
-	builder.append(user);
-	builder.append(", uid=");
-	builder.append(uid);
 	builder.append(", id=");
 	builder.append(id);
 	builder.append(", visible=");
 	builder.append(visible);
-	builder.append(", version=");
-	builder.append(version);
-	builder.append(", changeSet=");
-	builder.append(changeSet);
-	builder.append(", timeStamp=");
-	builder.append(timeStamp);
 	builder.append(", tags=");
 	builder.append(tags.toString());
 	builder.append("]");

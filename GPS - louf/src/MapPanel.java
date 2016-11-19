@@ -128,8 +128,8 @@ public class MapPanel extends JPanel implements ComponentListener{
 	    ArrayList<String> refs = w.getRefs();
 	    if(refs.size() > 0) {
 		//Should prob check for null values
-		Node prev = map.getNode(refs.get(0));
-		Node curr = null;
+		GPSNode prev = map.getNode(refs.get(0));
+		GPSNode curr = null;
 		for(int i = 1; i < refs.size(); i++) {
 		    curr = map.getNode(refs.get(i));
 		    if(curr != null) {

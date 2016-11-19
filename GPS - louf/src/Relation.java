@@ -5,7 +5,7 @@ import java.util.HashMap;
  * Represents GPS relation object
  */
 public class Relation extends GPSObject{
-    private ArrayList<Member> members;
+    private ArrayList<GPSObject> members;
 
     /**
      * @param id
@@ -16,51 +16,38 @@ public class Relation extends GPSObject{
      * @param changeSet
      * @param timeStamp
      */
-    public Relation(String user, String uid, String id, boolean visible, String version,
-	    String changeSet, String timeStamp) {
-	super(user, uid, id, visible, version, changeSet, timeStamp);
+    public Relation(String id, boolean visible) {
+	super(id, visible);
 	
-	members = new ArrayList<Member>();
+	members = new ArrayList<GPSObject>();
     }
 
     /*
      * Add a member
      * @param member object
      */
-    public void addMember(Member m) {
-	members.add(m);
+    public void addMember(GPSObject g) {
+	members.add(g);
     }
     
     /*
      * Get the members 
      * Might be replaced with clone of list?
      */
-    public ArrayList<Member> getMembers() {
+    public ArrayList<GPSObject> getMembers() {
 	return members;
     }
 
-
-    
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
 	StringBuilder builder = new StringBuilder();
-	builder.append("Relation [user=");
-	builder.append(user);
-	builder.append(", uid=");
-	builder.append(uid);
-	builder.append(", id=");
+	builder.append("Relation [id=");
 	builder.append(id);
 	builder.append(", visible=");
 	builder.append(visible);
-	builder.append(", version=");
-	builder.append(version);
-	builder.append(", changeSet=");
-	builder.append(changeSet);
-	builder.append(", timeStamp=");
-	builder.append(timeStamp);
 	builder.append(", tags=");
 	builder.append(tags.toString());
 	builder.append(", member=");

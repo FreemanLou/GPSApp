@@ -5,7 +5,7 @@ import java.util.*;
  */
 
 public class Map {
-    private HashMap<String, Node> nodes;	// Id and node
+    private HashMap<String, GPSNode> nodes;	// Id and node
     private HashMap<String, Way> ways;		// Id and way
     private HashMap<String, Relation> relations; // Id and relation
     
@@ -17,7 +17,7 @@ public class Map {
     private TreeMap<String, Way> wayNameMap;	// Used for display on left panel
 
     public Map() {
-	nodes = new HashMap<String, Node>();
+	nodes = new HashMap<String, GPSNode>();
 	ways = new HashMap<String, Way>();
 	relations = new HashMap<String, Relation>();
 	
@@ -83,7 +83,7 @@ public class Map {
     /*
      * Adds a node
      */
-    public void addNode(String key, Node value) {
+    public void addNode(String key, GPSNode value) {
 	nodes.put(key, value);
     }
     
@@ -116,14 +116,14 @@ public class Map {
     /**
      * @return the nodes
      */
-    public HashMap<String, Node> getNodes() {
+    public HashMap<String, GPSNode> getNodes() {
         return nodes;
     }
 
     /*
      * Get node by id
      */
-    public Node getNode(String key) {
+    public GPSNode getNode(String key) {
 	return nodes.get(key);
     }
     
@@ -146,17 +146,6 @@ public class Map {
      */
     public Way getWayByName(String name) {
 	return wayNameMap.get(name);
-    }
-    
-    /* 
-     * Finds Way by UId and returns it
-     */
-    public Way getWayByUId(String uid) {
-	for(Way w: ways.values()) {
-	    if(w.getUid().equals(uid))
-		return w;
-	}
-	return null;
     }
     
     /*

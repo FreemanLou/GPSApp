@@ -4,19 +4,14 @@
 import java.util.*;
 
 public class Way extends GPSObject implements Comparable<Way>{
-    private String role;
-    
     private ArrayList<String> refs;	//Reference
-    private HashMap<String, Node> nodes;
+    private HashMap<String, GPSNode> nodes;
     
-    public Way(String user, String uid, String id, boolean visible, String version,
-	    String changeSet, String timeStamp) {
-	super(user, uid, id, visible, version, changeSet, timeStamp);	
+    public Way(String id, boolean visible) {
+	super(id, visible);	
 
-	this.role = null;
-	
 	refs = new ArrayList<String>();
-	nodes = new HashMap<String, Node>();
+	nodes = new HashMap<String, GPSNode>();
     }
     
     /**
@@ -26,6 +21,10 @@ public class Way extends GPSObject implements Comparable<Way>{
         return refs;
     }
 
+    /**
+     * Add a ref to the way object
+     * @param string containing ref code
+     */
     public void addRef(String ref) {
 	refs.add(ref);
     }
@@ -33,20 +32,17 @@ public class Way extends GPSObject implements Comparable<Way>{
     /**
      * @return the nodes
      */
-    public HashMap<String, Node> getNodes() {
+    public HashMap<String, GPSNode> getNodes() {
         return nodes;
     }
 
-    public void addNode(String id, Node n) {
+    /**
+     * Add a node to the way
+     * @param string id
+     * @param Node object
+     */
+    public void addNode(String id, GPSNode n) {
 	nodes.put(id, n);
-    }
-
-    public String getRole() {
-	return role;
-    }
-    
-    public void setRole(String role) {
-	this.role = role;
     }
 
     /* (non-Javadoc)
@@ -71,7 +67,6 @@ public class Way extends GPSObject implements Comparable<Way>{
 	int result = 1;
 	result = prime * result + ((nodes == null) ? 0 : nodes.hashCode());
 	result = prime * result + ((refs == null) ? 0 : refs.hashCode());
-	result = prime * result + ((role == null) ? 0 : role.hashCode());
 	return result;
     }
 
@@ -97,11 +92,6 @@ public class Way extends GPSObject implements Comparable<Way>{
 		return false;
 	} else if (!refs.equals(other.refs))
 	    return false;
-	if (role == null) {
-	    if (other.role != null)
-		return false;
-	} else if (!role.equals(other.role))
-	    return false;
 	return true;
     }
 
@@ -111,24 +101,8 @@ public class Way extends GPSObject implements Comparable<Way>{
     @Override
     public String toString() {
 	StringBuilder builder = new StringBuilder();
-	builder.append("Way [role=");
-	builder.append(role);
-	builder.append(", nodes=");
-	builder.append(nodes);
-	builder.append(", user=");
-	builder.append(user);
-	builder.append(", uid=");
-	builder.append(uid);
-	builder.append(", id=");
+	builder.append("Way [id=");
 	builder.append(id);
-	builder.append(", visible=");
-	builder.append(visible);
-	builder.append(", version=");
-	builder.append(version);
-	builder.append(", changeSet=");
-	builder.append(changeSet);
-	builder.append(", timeStamp=");
-	builder.append(timeStamp);
 	builder.append(", tags=");
 	builder.append(tags.toString());
 	builder.append(", refs:");
