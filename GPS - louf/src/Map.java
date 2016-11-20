@@ -7,7 +7,7 @@ import java.util.*;
  */
 
 public class Map implements Graph {
-    private HashMap<String, GraphNode> nodes;	// Id and node
+    private HashMap<String, GPSNode> nodes;	// Id and node
     private HashMap<String, Way> ways;		// Id and way
     private HashMap<String, Relation> relations; // Id and relation
     
@@ -17,7 +17,7 @@ public class Map implements Graph {
     private double maxLon;
 
     public Map() {
-	nodes = new HashMap<String, GraphNode>();
+	nodes = new HashMap<String, GPSNode>();
 	ways = new HashMap<String, Way>();
 	relations = new HashMap<String, Relation>();
     }
@@ -81,7 +81,7 @@ public class Map implements Graph {
     /**
      * Adds a node
      */
-    public void addNode(String key, GraphNode value) {
+    public void addNode(String key, GPSNode value) {
 	nodes.put(key, value);
     }
     
@@ -102,7 +102,7 @@ public class Map implements Graph {
     /**
      * @return the nodes
      */
-    public HashMap<String, GraphNode> getNodes() {
+    public HashMap<String, GPSNode> getNodes() {
         return nodes;
     }
 
@@ -148,9 +148,19 @@ public class Map implements Graph {
 	GPSNode closest = null;
 	double min = Double.MAX_VALUE;
 	
-	
-	
-	return null;
+	for(GPSNode node : nodes.values()) {
+	    double nodeLat = node.getLatitude();
+	    double nodeLon = node.getLongitude();
+	    
+	    double dist = calcDistance(lat, lon, nodeLat, nodeLon);
+	    
+	    if(dist < min) {
+		min = dist;
+		closest = node;
+	    }
+	}
+
+	return closest;
     }
     
     /**
@@ -160,7 +170,7 @@ public class Map implements Graph {
      * @param longitude1
      * @param latitude2
      * @param longitude2
-     * @return double distance
+     * @return double distance in meters
      */
     public double calcDistance(double lat1, double lon1, double lat2, double lon2) {
 	//Calculate great-circle distance
