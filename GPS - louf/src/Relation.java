@@ -5,41 +5,37 @@ import java.util.HashMap;
  * Represents GPS relation object
  */
 public class Relation extends GPSObject{
-    private ArrayList<GPSObject> members;
+    private HashMap<String, String> members;
 
     /**
      * @param id
-     * @param user
-     * @param uid
      * @param visible
-     * @param version
-     * @param changeSet
-     * @param timeStamp
      */
     public Relation(String id, boolean visible) {
 	super(id, visible);
 	
-	members = new ArrayList<GPSObject>();
+	members = new HashMap<>();
     }
 
-    /*
+    /**
      * Add a member
-     * @param member object
+     * @param string GPSObject id
+     * @param string type
      */
-    public void addMember(GPSObject g) {
-	members.add(g);
+    public void addMember(String id, String type) {
+	members.put(id, type);
     }
     
-    /*
+    /**
      * Get the members 
      * Might be replaced with clone of list?
      */
-    public ArrayList<GPSObject> getMembers() {
+    public HashMap<String, String> getMembers() {
 	return members;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Returns string representation of the relation
      */
     @Override
     public String toString() {
@@ -56,6 +52,4 @@ public class Relation extends GPSObject{
 	builder.append("\n");
 	return builder.toString();
     }
-    
-
 }

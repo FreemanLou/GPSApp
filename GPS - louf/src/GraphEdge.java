@@ -12,13 +12,13 @@ public class GraphEdge {
     // Weight value of the edge
     private double weight;
     
-    // ID of first vertex
-    private String vertexA;
+    // First vertex
+    private GraphNode vertexA;
     
-    // ID of second vertex
-    private String vertexB;
+    // Second vertex
+    private GraphNode vertexB;
     
-    public GraphEdge(String vertexA, String vertexB, double weight) {
+    public GraphEdge(GraphNode vertexA, GraphNode vertexB, double weight) {
 	this.vertexA = vertexA;
 	this.vertexB = vertexB;
 	this.weight = weight;
@@ -33,18 +33,18 @@ public class GraphEdge {
     }
 
     /**
-     * Gets the ID of vertexA
+     * Gets vertexA
      * @return string ID
      */
-    public String getVertexA() {
+    public GraphNode getVertexA() {
         return vertexA;
     }
     
     /**
-     * Gets the ID of vertexB
+     * Gets vertexB
      * @return  string ID
      */
-    public String getVertexB() {
+    public GraphNode getVertexB() {
         return vertexB;
     }
 }

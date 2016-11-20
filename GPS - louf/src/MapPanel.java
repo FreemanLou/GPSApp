@@ -128,10 +128,10 @@ public class MapPanel extends JPanel implements ComponentListener{
 	    ArrayList<String> refs = w.getRefs();
 	    if(refs.size() > 0) {
 		//Should prob check for null values
-		GPSNode prev = map.getNode(refs.get(0));
+		GPSNode prev = (GPSNode) map.getNode(refs.get(0));
 		GPSNode curr = null;
 		for(int i = 1; i < refs.size(); i++) {
-		    curr = map.getNode(refs.get(i));
+		    curr = (GPSNode) map.getNode(refs.get(i));
 		    if(curr != null) {
 			Point2D.Double prevCoord = convertToPoint(
 				prev.getLatitude(), 

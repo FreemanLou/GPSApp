@@ -104,7 +104,6 @@ class OSMParser {
          * Method called by SAX parser when end of document is encountered.
          */
         public void endDocument() {
-            map.setNameMap();
             System.out.println("endDocument");
         }
 
@@ -146,23 +145,18 @@ class OSMParser {
             if(isNode || isWay || isRelation) {
         	//Get the common attributes
                 String id = attributes.get("id");
-                String user = attributes.get("user");
-                String uid = attributes.get("uid");
                 boolean visible = attributes.get("visible").equals("1") ? true : false;
-                String version = attributes.get("version");
-                String changeSet = attributes.get("changeset");
-                String timeStamp = attributes.get("timestamp");
                 
                 if(isNode) {
             		double lon = Double.valueOf(attributes.get("lon"));
             		double lat = Double.valueOf(attributes.get("lat"));
-            		currObject = new Node(lat, lon, user, uid, id, visible, version, changeSet, timeStamp);
-            		map.addNode(id, (Node)currObject);
+            		currObject = new GPSNode(lat, lon, id, visible);
+            		map.addNode(id, (GPSNode)currObject);
                 } else if (isWay) {
-            		currObject = new Way(user, uid, id, visible, version, changeSet, timeStamp);
+            		currObject = new Way(id, visible);
             		map.addWay(id, (Way)currObject);
                 } else { // is Relation
-                    	currObject = new Relation(user, uid, id, visible, version, changeSet, timeStamp);
+                    	currObject = new Relation(id, visible);
                     	map.addRelation(id, (Relation)currObject);
                 }
             } else { //other type
@@ -173,7 +167,7 @@ class OSMParser {
         		String type = attributes.get("type");
         		String ref = attributes.get("ref");
         		String role = attributes.get("role");
-        		((Relation) currObject).addMember(new Member(type, ref, role));
+        		((Relation) currObject).addMember(ref, type);
         	    } else if (isTag) {
         		String k = attributes.get("k");
         		String v = attributes.get("v");

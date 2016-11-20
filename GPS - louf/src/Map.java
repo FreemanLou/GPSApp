@@ -1,11 +1,14 @@
 import java.util.*;
-/*
+/**
  * 
- * Object representing a map
+ * Object representing a map and also
+ * an undirected graph
+ * 
+ * @author Freeman
  */
 
-public class Map {
-    private HashMap<String, GPSNode> nodes;	// Id and node
+public class Map implements Graph{
+    private HashMap<String, GraphNode> nodes;	// Id and node
     private HashMap<String, Way> ways;		// Id and way
     private HashMap<String, Relation> relations; // Id and relation
     
@@ -14,14 +17,10 @@ public class Map {
     private double minLon;
     private double maxLon;
 
-    private TreeMap<String, Way> wayNameMap;	// Used for display on left panel
-
     public Map() {
-	nodes = new HashMap<String, GPSNode>();
+	nodes = new HashMap<String, GraphNode>();
 	ways = new HashMap<String, Way>();
 	relations = new HashMap<String, Relation>();
-	
-	wayNameMap = new TreeMap<String, Way>();
     }
     
     /**
@@ -80,33 +79,21 @@ public class Map {
         this.maxLon = maxLon;
     }
 
-    /*
+    /**
      * Adds a node
      */
-    public void addNode(String key, GPSNode value) {
+    public void addNode(String key, GraphNode value) {
 	nodes.put(key, value);
     }
     
-    /*
+    /**
      * Adds a way
      */
     public void addWay(String key, Way value) {
 	ways.put(key, value);
     }
     
-    /* 
-     * Creates alphabetized map of names to Way
-     */
-    public void setNameMap() {
-	for(Way value : ways.values()) {
-        	String name = value.getTag("name");
-        	if(name != null) {
-                    wayNameMap.put(name, value);
-        	}
-	}
-    }
-    
-    /*
+    /**
      * Adds a relation
      */
     public void addRelation(String key, Relation value) {
@@ -116,14 +103,14 @@ public class Map {
     /**
      * @return the nodes
      */
-    public HashMap<String, GPSNode> getNodes() {
+    public HashMap<String, GraphNode> getNodes() {
         return nodes;
     }
 
-    /*
+    /**
      * Get node by id
      */
-    public GPSNode getNode(String key) {
+    public GraphNode getNode(String key) {
 	return nodes.get(key);
     }
     
@@ -140,19 +127,14 @@ public class Map {
     public HashMap<String, Relation> getRelations() {
         return relations;
     }
-
-    /*
-     * Finds Way by name and returns it
-     */
-    public Way getWayByName(String name) {
-	return wayNameMap.get(name);
-    }
     
-    /*
-     * Returns alphabetized set of Way names
+    /**
+     * Computes route between two graph nodes
+     * 
+     * @return ArrayList containing the route or null if not possible 
      */
-    public Set<String> getNameList() {
-	return wayNameMap.keySet();
+    @Override
+    public ArrayList<GraphEdge> getRoute(GraphNode a, GraphNode b) {
+	return null;
     }
-    
 }

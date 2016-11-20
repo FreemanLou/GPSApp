@@ -1,6 +1,6 @@
 import java.util.*;
 
-/*
+/**
  * 
  * Represents a GPS node
  * 
@@ -9,11 +9,17 @@ public class GPSNode extends GPSObject implements GraphNode {
     private double latitude;
     private double longitude;
     
+    private ArrayList<GraphEdge> edges;
+    private HashSet<GraphNode> adjacents;
+    
     public GPSNode(double latitude, double longitude, String id, boolean visible) {
 	super(id, visible);
 	
 	this.longitude = longitude;
 	this.latitude = latitude;
+	
+	edges = new ArrayList<>();
+	adjacents = new HashSet<>();
     } 
     
     /**
@@ -30,8 +36,10 @@ public class GPSNode extends GPSObject implements GraphNode {
         return longitude;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /**
+     * Computes the hashCode of the object
+     * 
+     * @return integer hashCode
      */
     @Override
     public int hashCode() {
@@ -45,8 +53,10 @@ public class GPSNode extends GPSObject implements GraphNode {
 	return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /**
+     * Compares this GPSNode to another
+     * 
+     * @return true if two nodes are equal, false otherwise
      */
     @Override
     public boolean equals(Object obj) {
@@ -66,8 +76,10 @@ public class GPSNode extends GPSObject implements GraphNode {
 	return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Gets string representation of the GPSNode
+     * 
+     * @return String with object info
      */
     @Override
     public String toString() {
@@ -84,5 +96,35 @@ public class GPSNode extends GPSObject implements GraphNode {
 	builder.append(tags.toString());
 	builder.append("]");
 	return builder.toString();
+    }
+
+    /**
+     * Gets edges with the current node as a vertex
+     * 
+     * @return ArrayList of edges
+     */
+    @Override
+    public ArrayList<GraphEdge> getEdges() {
+	return edges;
+    }
+
+    /**
+     * Add edge to node. Handles the nodes adjacent to
+     * the current node as well.
+     * 
+     * @param GraphEdge object
+     */
+    public void addEdge(GraphEdge e) {
+	edges.add(e);
+    }
+    
+    /**
+     * Gets nodes adjacent to the current node
+     * 
+     * @return ArrayList of adjacent nodes
+     */
+    @Override
+    public HashSet<GraphNode> getAdjacent() {
+	return adjacents;
     }
 }
