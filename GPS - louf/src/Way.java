@@ -1,4 +1,4 @@
-/*
+/**
  * Represents a GPS way object
  */
 import java.util.*;
@@ -6,12 +6,28 @@ import java.util.*;
 public class Way extends GPSObject implements Comparable<Way>{
     private ArrayList<String> refs;	//Reference
     private HashMap<String, GPSNode> nodes;
+    private HashSet<String> validRoads; // Tag values that represent roads for cars
     
     public Way(String id, boolean visible) {
 	super(id, visible);	
 
 	refs = new ArrayList<String>();
 	nodes = new HashMap<String, GPSNode>();
+	validRoads = new HashSet<String>();
+	validRoads.add("residential");
+	validRoads.add("unclassified");
+	validRoads.add("tertiary");
+	validRoads.add("secondary");
+	validRoads.add("primary");
+	validRoads.add("turning_circle");
+	validRoads.add("living_street");
+	validRoads.add("trunk");
+	validRoads.add("motorway");
+	validRoads.add("motorway_link");
+	validRoads.add("trunk_link");
+	validRoads.add("primary_link");
+	validRoads.add("secondary_link");
+	validRoads.add("tertiary_link");
     }
     
     /**
@@ -95,8 +111,8 @@ public class Way extends GPSObject implements Comparable<Way>{
 	return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Return string representation of map
      */
     @Override
     public String toString() {
@@ -110,5 +126,18 @@ public class Way extends GPSObject implements Comparable<Way>{
 	builder.append("]");
 	builder.append("\n");
 	return builder.toString();
+    }
+    
+    /**
+     * Checks to see if the way can be driven on
+     * 
+     *@return true if is drivable, false otherwise
+     */
+    public boolean canDrive() {
+	String value = this.getTag("highway");
+	if(value == null || !validRoads.contains(value))
+	    return false;
+	
+	return true;
     }
 }

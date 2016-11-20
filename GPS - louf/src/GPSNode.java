@@ -115,7 +115,15 @@ public class GPSNode extends GPSObject implements GraphNode {
      * @param GraphEdge object
      */
     public void addEdge(GraphEdge e) {
-	edges.add(e);
+	//Check to see if edge contains this node
+	GPSNode a = (GPSNode) e.getVertexA();
+	GPSNode b = (GPSNode) e.getVertexB();
+	
+	if(a.equals(this) || b.equals(this)) {
+	    edges.add(e);
+	    adjacents.add(a);
+	    adjacents.add(b);
+	}
     }
     
     /**
