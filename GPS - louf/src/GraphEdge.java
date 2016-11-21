@@ -39,7 +39,7 @@ public class GraphEdge {
     public GraphNode getVertexA() {
         return vertexA;
     }
-    
+
     /**
      * Gets vertexB
      * @return  string ID

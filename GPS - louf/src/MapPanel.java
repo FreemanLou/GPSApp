@@ -24,11 +24,10 @@ import javax.swing.JPanel;
  *
  */
 public class MapPanel extends JPanel implements ComponentListener{
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private Map map;
+    
+    //Drag start point
     private Point startPoint;
 
     private double scaleFactorA;
@@ -41,6 +40,14 @@ public class MapPanel extends JPanel implements ComponentListener{
     private double centY;
 
     private double zoomFactor;
+    
+    private boolean drawWayPoints;
+    private boolean settingStartWayPoint;
+    private boolean settingEndWayPoint;
+    // Map Coordinate of start point
+    private Point2D.Double startWayPoint;
+    // Map Coordinate of end point
+    private Point2D.Double endWayPoint;
     
     public MapPanel(Map map) {
 	super();
@@ -57,6 +64,12 @@ public class MapPanel extends JPanel implements ComponentListener{
 
 	zoomFactor = 1;
 	
+	drawWayPoints = true;
+	settingStartWayPoint = true;
+	settingEndWayPoint = false;
+	startWayPoint = null;
+	endWayPoint = null;
+	
 	this.setOpaque(true);
 	this.setBackground(Color.WHITE);
 
@@ -65,6 +78,23 @@ public class MapPanel extends JPanel implements ComponentListener{
 	    public void mousePressed(MouseEvent event) {
 		if(event != null) {
 		    startPoint = event.getPoint();
+		    // Convert point to coordinates
+		    if(settingStartWayPoint) {
+			System.out.println("Received screen coords");
+
+			Point p = event.getPoint();
+			System.out.println(p.getX() + " " + p.getY());
+			
+			startWayPoint =  convertToCoordinate(p.getX(), p.getY());
+
+			repaint();
+		    }
+    			
+		    if(settingEndWayPoint) {
+			Point p = event.getPoint();
+			endWayPoint =  convertToCoordinate(p.getX(), p.getY());
+    		    	repaint();
+		    }
 		}
 	    }
 	    
@@ -152,29 +182,56 @@ public class MapPanel extends JPanel implements ComponentListener{
 		}				    
 	    }
 	}
+	
+	if(drawWayPoints) {
+	    if(startWayPoint != null) {
+		System.out.println("Before: " + startWayPoint.getX() + " "  + startWayPoint.getY());
+		Point2D.Double p = convertToPoint(startWayPoint.getY(), startWayPoint.getX());
+		System.out.println("After: " + p.getX() + ", " + p.getY());
+		g2.drawOval((int)p.getX(), (int)p.getY(), 10, 10);
+	    }
+
+	    if(endWayPoint != null) {
+		Point2D.Double p = convertToPoint(endWayPoint.getY(), endWayPoint.getX());
+		g2.drawOval((int)p.getX(), (int)p.getY(), 10, 10);
+	    }
+	}
     }
     
-    private double calculateX(double lon) {
-	return 0.0;
-    }
-    
-    private double calculateY(double lat) {
-	return 0.0;
-    }
-    
-    /*
-     * Converts lat and lon to a Point2D object
+    /**
+     * Converts lat and lon to a Point2D object containing on screen x,y pair
+     * 
+     * @param lat
+     * @param lon
+     * @return Point2D.Double
      */
     public Point2D.Double convertToPoint(double lat, double lon) {
 	double x = 0;
 	double y = 0;
+	
+	y = zoomFactor * scaleFactorA * (centLat - lat) + centY;
 
 	scaleFactorB = scaleFactorA * Math.cos(Math.toRadians(lat));
+	x = zoomFactor * scaleFactorB * (lon - centLon) + centX;
+
+	return new Point2D.Double(x, y);
+    }
+    
+    /**
+     * Converts x, y to Point2D object with longitude and latitude
+     * 
+     * @param x
+     * @param y
+     * @return Point2D.Double
+     */
+    public Point2D.Double convertToCoordinate(double x, double y) {
+	double latitude = centLat - ((y - centY)/(zoomFactor * scaleFactorA));
+	System.out.println("Lat: " + latitude);
+	scaleFactorB = scaleFactorA * Math.cos(Math.toRadians(latitude));
+	double longitude = ((x - centX)/(zoomFactor * scaleFactorB)) + centLon;
+	System.out.println(" Lon: " + longitude);
 	
-	x = zoomFactor * scaleFactorA * (centLat - lat) + centX;
-	y = zoomFactor * scaleFactorB * (lon - centLon) + centY;
-	
-	return new Point2D.Double(y, x);
+	return new Point2D.Double(longitude, latitude);
     }
     
     public void componentMoved(ComponentEvent e) {

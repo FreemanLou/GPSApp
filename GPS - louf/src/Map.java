@@ -16,6 +16,7 @@ public class Map implements Graph {
     private double minLon;
     private double maxLon;
 
+    
     public Map() {
 	nodes = new HashMap<String, GPSNode>();
 	ways = new HashMap<String, Way>();
@@ -187,5 +188,13 @@ public class Map implements Graph {
 	double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
 	
 	return radius * c;
+    }
+    
+    /**
+     * Creates edges by calculating distance and adding to the 
+     * relevant nodes
+     */
+    public void calcEdges() {
+	return;
     }
 }

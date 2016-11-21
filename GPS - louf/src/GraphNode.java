@@ -13,14 +13,14 @@ public interface GraphNode {
      * @param GraphEdge object
      */
     public void addEdge(GraphEdge e);
-    
+
     /**
      * Gets the edges coming out of this node
      * 
      * @return ArrayList of edges
      */
     public ArrayList<GraphEdge> getEdges();
-    
+
     /**
      * Gets adjacent nodes
      * 
