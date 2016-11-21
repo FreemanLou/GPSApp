@@ -79,6 +79,13 @@ public class MapPanel extends JPanel implements ComponentListener{
 		if(event != null) {
 		    startPoint = event.getPoint();
 		    // Convert point to coordinates
+		    if(settingEndWayPoint) {
+			Point p = event.getPoint();
+			endWayPoint =  convertToCoordinate(p.getX(), p.getY());
+			settingEndWayPoint = false;
+    		    	repaint();
+		    }
+		    
 		    if(settingStartWayPoint) {
 			System.out.println("Received screen coords");
 
@@ -86,14 +93,9 @@ public class MapPanel extends JPanel implements ComponentListener{
 			System.out.println(p.getX() + " " + p.getY());
 			
 			startWayPoint =  convertToCoordinate(p.getX(), p.getY());
-
+			settingStartWayPoint = false;
+			settingEndWayPoint = true;
 			repaint();
-		    }
-    			
-		    if(settingEndWayPoint) {
-			Point p = event.getPoint();
-			endWayPoint =  convertToCoordinate(p.getX(), p.getY());
-    		    	repaint();
 		    }
 		}
 	    }
@@ -185,15 +187,16 @@ public class MapPanel extends JPanel implements ComponentListener{
 	
 	if(drawWayPoints) {
 	    if(startWayPoint != null) {
-		System.out.println("Before: " + startWayPoint.getX() + " "  + startWayPoint.getY());
 		Point2D.Double p = convertToPoint(startWayPoint.getY(), startWayPoint.getX());
-		System.out.println("After: " + p.getX() + ", " + p.getY());
-		g2.drawOval((int)p.getX(), (int)p.getY(), 10, 10);
+		//g2.drawOval((int)p.getX(), (int)p.getY(), 10, 10);
+		g2.fillOval((int)p.getX(), (int)p.getY(), 10, 10);
 	    }
 
 	    if(endWayPoint != null) {
 		Point2D.Double p = convertToPoint(endWayPoint.getY(), endWayPoint.getX());
-		g2.drawOval((int)p.getX(), (int)p.getY(), 10, 10);
+		//g2.drawOval((int)p.getX(), (int)p.getY(), 10, 10);
+		g2.fillOval((int)p.getX(), (int)p.getY(), 10, 10);
+
 	    }
 	}
     }
