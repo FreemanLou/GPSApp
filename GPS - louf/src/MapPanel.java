@@ -30,7 +30,7 @@ public class MapPanel extends JPanel implements ComponentListener{
     private Map map;
     
     //Maps that are used for drawing
-    private HashMap<String, Integer> widthMap; 
+    private HashMap<String, Double> widthMap; 
     private HashMap<String, Color> colorMap;
     
     //Drag start point
@@ -79,27 +79,39 @@ public class MapPanel extends JPanel implements ComponentListener{
 	this.setOpaque(true);
 	this.setBackground(Color.WHITE);
 	
-	widthMap = new HashMap<String, Integer>();
+	widthMap = new HashMap<String, Double>();
 	colorMap = new HashMap<String, Color>();
 	
-//	widthMap.put("residential", );
-//	widthMap.put("unclassified", );
-//	widthMap.put("primary", );
-//	widthMap.put("primary_link", );
-//	widthMap.put("secondary", );
-//	widthMap.put("secondary_link", );	
-//	widthMap.put("tertiary", );
-//	widthMap.put("tertiary_link", );
-//	widthMap.put("turning_circle", );
-//	widthMap.put("living_street", );
-//	widthMap.put("trunk", );
-//	widthMap.put("motorway", );
-//	widthMap.put("motorway_link", );
-//	widthMap.put("trunk_link", );
-
-
-
+	widthMap.put("residential", 2.0);
+	widthMap.put("unclassified", 2.0);
+	widthMap.put("primary", 7.0);
+	widthMap.put("primary_link", 4.0);
+	widthMap.put("secondary", 2.5);
+	widthMap.put("secondary_link", 2.5);	
+	widthMap.put("tertiary", 2.0);
+	widthMap.put("tertiary_link", 2.0);
+	widthMap.put("turning_circle", 2.0);
+	widthMap.put("living_street", 2.0);
+	widthMap.put("trunk", 3.0);
+	widthMap.put("motorway", 7.0);
+	widthMap.put("motorway_link", 3.5);
+	widthMap.put("trunk_link", 2.5);
 	
+	colorMap.put("residential", Color.lightGray);
+	colorMap.put("unclassified", Color.lightGray);
+	colorMap.put("primary", Color.ORANGE);
+	colorMap.put("primary_link", Color.ORANGE);
+	colorMap.put("secondary", Color.lightGray);
+	colorMap.put("secondary_link", Color.lightGray);	
+	colorMap.put("tertiary", Color.lightGray);
+	colorMap.put("tertiary_link", Color.lightGray);
+	colorMap.put("turning_circle", Color.lightGray);
+	colorMap.put("living_street", Color.lightGray);
+	colorMap.put("trunk", Color.ORANGE);
+	colorMap.put("motorway", Color.ORANGE);
+	colorMap.put("motorway_link", Color.ORANGE);
+	colorMap.put("trunk_link", Color.ORANGE);
+
 	addMouseListener(new MouseAdapter() {
 	    @Override
 	    public void mousePressed(MouseEvent event) {
@@ -192,10 +204,15 @@ public class MapPanel extends JPanel implements ComponentListener{
 	     */
 	    if(w.canDrive()) {
 		String type = w.getRoadType();
-		g2.setStroke(new BasicStroke(3));
+		
+		double width = widthMap.get(type);
+		g2.setStroke(new BasicStroke((float)width));
+		
+		g2.setColor(colorMap.get(type));
 	    } else if(w.isBuilding()) {
 		//Buildings get smallest stroke
 		g2.setStroke(new BasicStroke(1));
+		g2.setColor(Color.pink);
 	    } else if(w.isBoundary()) {	//Remove boundary
 		continue;
 	    }
