@@ -1,10 +1,12 @@
 /**
  * 
  */
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
@@ -79,7 +81,25 @@ public class MapPanel extends JPanel implements ComponentListener{
 	
 	widthMap = new HashMap<String, Integer>();
 	colorMap = new HashMap<String, Color>();
+	
+//	widthMap.put("residential", );
+//	widthMap.put("unclassified", );
+//	widthMap.put("primary", );
+//	widthMap.put("primary_link", );
+//	widthMap.put("secondary", );
+//	widthMap.put("secondary_link", );	
+//	widthMap.put("tertiary", );
+//	widthMap.put("tertiary_link", );
+//	widthMap.put("turning_circle", );
+//	widthMap.put("living_street", );
+//	widthMap.put("trunk", );
+//	widthMap.put("motorway", );
+//	widthMap.put("motorway_link", );
+//	widthMap.put("trunk_link", );
 
+
+
+	
 	addMouseListener(new MouseAdapter() {
 	    @Override
 	    public void mousePressed(MouseEvent event) {
@@ -143,10 +163,10 @@ public class MapPanel extends JPanel implements ComponentListener{
 		double rotations = e.getPreciseWheelRotation();
 		if(rotations < 0) {	// zoom in
 		    if(zoomFactor < 14.0)
-			zoomFactor += 0.1;
+			zoomFactor += 0.5;
 		} else {	// zoom out
 		    if(zoomFactor > .5)
-			zoomFactor -= 0.1;
+			zoomFactor -= 0.5;
 		}
 		repaint();
 	    }
@@ -172,11 +192,16 @@ public class MapPanel extends JPanel implements ComponentListener{
 	     */
 	    if(w.canDrive()) {
 		String type = w.getRoadType();
+		g2.setStroke(new BasicStroke(3));
 	    } else if(w.isBuilding()) {
-		
+		//Buildings get smallest stroke
+		g2.setStroke(new BasicStroke(1));
 	    } else if(w.isBoundary()) {	//Remove boundary
 		continue;
 	    }
+	    
+	    //Set anti-aliasing
+	    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    
 	    ArrayList<String> refs = w.getRefs();
 	    if(refs.size() > 0) {
