@@ -27,6 +27,10 @@ public class MapPanel extends JPanel implements ComponentListener{
     private static final long serialVersionUID = 1L;
     private Map map;
     
+    //Maps that are used for drawing
+    private HashMap<String, Integer> widthMap; 
+    private HashMap<String, Color> colorMap;
+    
     //Drag start point
     private Point startPoint;
 
@@ -72,6 +76,9 @@ public class MapPanel extends JPanel implements ComponentListener{
 	
 	this.setOpaque(true);
 	this.setBackground(Color.WHITE);
+	
+	widthMap = new HashMap<String, Integer>();
+	colorMap = new HashMap<String, Color>();
 
 	addMouseListener(new MouseAdapter() {
 	    @Override
@@ -157,6 +164,20 @@ public class MapPanel extends JPanel implements ComponentListener{
 	
 	HashMap<String, Way> ways = map.getWays();
 	for(Way w : ways.values()) {
+	    /**
+	     * First check to see if we should draw this way.
+	     * We should only be drawing roads and some buildings
+	     * 
+	     * Then get the color and width of the way
+	     */
+	    if(w.canDrive()) {
+		String type = w.getRoadType();
+	    } else if(w.isBuilding()) {
+		
+	    } else if(w.isBoundary()) {	//Remove boundary
+		continue;
+	    }
+	    
 	    ArrayList<String> refs = w.getRefs();
 	    if(refs.size() > 0) {
 		//Should prob check for null values

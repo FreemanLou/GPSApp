@@ -140,4 +140,44 @@ public class Way extends GPSObject implements Comparable<Way>{
 	
 	return true;
     }
+    
+    /**
+     * Gets the type of road the way corresponds to
+     * 
+     * @return the type of road if the way represents a road, null otherwise
+     */
+    public String getRoadType() {
+	if(!canDrive())
+	    return null;
+	else
+	    return this.getTag("highway");
+    }
+    
+    /**
+     * Checks to see if the way outlines a building
+     * @return
+     */
+    public boolean isBuilding() {
+	String value = this.getTag("building");
+	if(value == null)
+	    return false;
+	    
+	if(value.equals("yes") || value.equals("house"))
+	    return true;
+	return false;
+	
+    }
+    
+    
+    /**
+     * Checks to see if the way is a boundary
+     * @return true if is a boundary, false otherwise
+     */
+    public boolean isBoundary() {
+	String value = this.getTag("boundary");
+	if(value == null)
+	    return false;
+	
+	return true;
+    }
 }
