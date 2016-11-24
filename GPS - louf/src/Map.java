@@ -165,7 +165,7 @@ public class Map implements Graph {
     }
     
     /**
-     * Calculates distance between two coordinate sets 
+     * Calculates distance between two coordinate sets
      * 
      * @param latitude1
      * @param longitude1

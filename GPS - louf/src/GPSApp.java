@@ -52,7 +52,7 @@ public class GPSApp{
     }
     
     public static void main(String[] args) throws Exception {
-	File f = new File("usb.osm");
+	File f = new File("district_of_columbia.osm");
 	GPSApp demo = new GPSApp(f);
     }
 }

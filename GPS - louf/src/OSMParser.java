@@ -133,6 +133,19 @@ class OSMParser {
         	return;
             }
             
+            if(qName.equals("bound")) {
+            	String[] box = attributes.get("box").split(",");
+            	if(box != null && box.length == 4) {
+                	map.setMinLat(Double.parseDouble(box[0]));
+                	map.setMaxLat(Double.parseDouble(box[2]));
+                	map.setMinLon(Double.parseDouble(box[1]));
+                	map.setMaxLon(Double.parseDouble(box[3]));  		
+            	} else {
+            		System.out.println("Invalid bounds attribute");
+            	}
+            	return;
+            }
+            
             boolean isNode = qName.equals("node");
             boolean isWay = qName.equals("way");
             boolean isRelation = qName.equals("relation");
@@ -145,7 +158,8 @@ class OSMParser {
             if(isNode || isWay || isRelation) {
         	//Get the common attributes
                 String id = attributes.get("id");
-                boolean visible = attributes.get("visible").equals("1") ? true : false;
+                //boolean visible = attributes.get("visible").equals("1") ? true : false;
+                boolean visible = true;
                 
                 if(isNode) {
             		double lon = Double.valueOf(attributes.get("lon"));

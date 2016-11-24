@@ -121,6 +121,11 @@ public class MapPanel extends JPanel implements ComponentListener{
 		    if(settingEndWayPoint) {
 			Point p = event.getPoint();
 			endWayPoint =  convertToCoordinate(p.getX(), p.getY());
+			
+			//Distance test
+			//System.out.println(map.calcDistance(startWayPoint.getY(), startWayPoint.getX(),
+			//		endWayPoint.getY(), endWayPoint.getX()));
+
 			settingEndWayPoint = false;
     		    	repaint();
 		    }
@@ -222,8 +227,10 @@ public class MapPanel extends JPanel implements ComponentListener{
 	    
 	    ArrayList<String> refs = w.getRefs();
 	    if(refs.size() > 0) {
-		//Should prob check for null values
 		GPSNode prev = (GPSNode) map.getNode(refs.get(0));
+		if(prev == null)
+		    continue;
+		
 		GPSNode curr = null;
 		for(int i = 1; i < refs.size(); i++) {
 		    curr = (GPSNode) map.getNode(refs.get(i));
