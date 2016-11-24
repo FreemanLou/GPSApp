@@ -85,11 +85,11 @@ public class MapPanel extends JPanel implements ComponentListener{
 	widthMap.put("residential", 2.0);
 	widthMap.put("unclassified", 2.0);
 	widthMap.put("primary", 7.0);
-	widthMap.put("primary_link", 4.0);
-	widthMap.put("secondary", 2.5);
-	widthMap.put("secondary_link", 2.5);	
-	widthMap.put("tertiary", 2.0);
-	widthMap.put("tertiary_link", 2.0);
+	widthMap.put("primary_link", 7.0);
+	widthMap.put("secondary", 6.0);
+	widthMap.put("secondary_link", 6.0);	
+	widthMap.put("tertiary", 5.0);
+	widthMap.put("tertiary_link", 5.0);
 	widthMap.put("turning_circle", 2.0);
 	widthMap.put("living_street", 2.0);
 	widthMap.put("trunk", 3.0);
@@ -207,13 +207,13 @@ public class MapPanel extends JPanel implements ComponentListener{
 		
 		double width = widthMap.get(type);
 		g2.setStroke(new BasicStroke((float)width));
-		
 		g2.setColor(colorMap.get(type));
 	    } else if(w.isBuilding()) {
 		//Buildings get smallest stroke
 		g2.setStroke(new BasicStroke(1));
 		g2.setColor(Color.pink);
 	    } else if(w.isBoundary()) {	//Remove boundary
+		//g2.setColor(Color.BLACK);
 		continue;
 	    }
 	    
