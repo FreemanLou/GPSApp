@@ -18,9 +18,9 @@ public class Map implements Graph {
 
     
     public Map() {
-	nodes = new HashMap<String, GPSNode>();
-	ways = new HashMap<String, Way>();
-	relations = new HashMap<String, Relation>();
+    	nodes = new HashMap<String, GPSNode>();
+    	ways = new HashMap<String, Way>();
+    	relations = new HashMap<String, Relation>();
     }
     
     /**
@@ -83,21 +83,21 @@ public class Map implements Graph {
      * Adds a node
      */
     public void addNode(String key, GPSNode value) {
-	nodes.put(key, value);
+    	nodes.put(key, value);
     }
     
     /**
      * Adds a way
      */
     public void addWay(String key, Way value) {
-	ways.put(key, value);
+    	ways.put(key, value);
     }
     
     /**
      * Adds a relation
      */
     public void addRelation(String key, Relation value) {
-	relations.put(key, value);
+    	relations.put(key, value);
     }
 
     /**
@@ -135,7 +135,7 @@ public class Map implements Graph {
      */
     @Override
     public ArrayList<GraphEdge> getRoute(GraphNode a, GraphNode b) {
-	return null;
+    	return null;
     }
     
     /**
@@ -146,22 +146,22 @@ public class Map implements Graph {
      * @return GPSNode that is closest to specified point
      */
     public GPSNode getClosestNode(double lat, double lon) {
-	GPSNode closest = null;
-	double min = Double.MAX_VALUE;
+		GPSNode closest = null;
+		double min = Double.MAX_VALUE;
+		
+		for(GPSNode node : nodes.values()) {
+		    double nodeLat = node.getLatitude();
+		    double nodeLon = node.getLongitude();
+		    
+		    double dist = calcDistance(lat, lon, nodeLat, nodeLon);
+		    
+		    if(dist < min) {
+			min = dist;
+			closest = node;
+		    }
+		}
 	
-	for(GPSNode node : nodes.values()) {
-	    double nodeLat = node.getLatitude();
-	    double nodeLon = node.getLongitude();
-	    
-	    double dist = calcDistance(lat, lon, nodeLat, nodeLon);
-	    
-	    if(dist < min) {
-		min = dist;
-		closest = node;
-	    }
-	}
-
-	return closest;
+		return closest;
     }
     
     /**
@@ -174,27 +174,56 @@ public class Map implements Graph {
      * @return double distance in meters
      */
     public double calcDistance(double lat1, double lon1, double lat2, double lon2) {
-	//Calculate great-circle distance
-	double radius = 6371000;	//radius of earth in meters
-	double deltaLat = Math.toRadians(lat2 - lat1);
-	double deltaLong = Math.toRadians(lon2 - lon1);
+    	//Calculate great-circle distance
+    	double radius = 6371000;	//radius of earth in meters
+    	double deltaLat = Math.toRadians(lat2 - lat1);
+    	double deltaLong = Math.toRadians(lon2 - lon1);
 	
-	lat1 = Math.toRadians(lat1);
-	lat2 = Math.toRadians(lat2);
+    	lat1 = Math.toRadians(lat1);
+    	lat2 = Math.toRadians(lat2);
 		
-	double a = Math.sin(deltaLat / 2.0) * Math.sin(deltaLat / 2.0) +
-		Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLong / 2.0) *
-		Math.sin(deltaLong / 2.0);
-	double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+    	double a = Math.sin(deltaLat / 2.0) * Math.sin(deltaLat / 2.0) +
+    			Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLong / 2.0) *
+    			Math.sin(deltaLong / 2.0);
+    	double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
 	
-	return radius * c;
+    	return radius * c;
     }
     
     /**
      * Creates edges by calculating distance and adding to the 
-     * relevant nodes
+     * relevant nodes. Should only be called once after the entire
+     * Map has been parsed.
      */
-    public void calcEdges() {
-	return;
+    public void createEdges() {
+	//int numEdge = 0;
+    	for(String key : ways.keySet()) {
+    	    Way way = ways.get(key);
+    	    if(way.canDrive()) {
+    		ArrayList<String> refs = way.getRefs();
+    			
+    		if(refs.size() > 0) {
+    		    GPSNode prev = (GPSNode) this.getNode(refs.get(0));
+    				
+    		    GPSNode curr = null;
+    		    for(int i = 1; i <refs.size(); i++) {
+    			curr = (GPSNode) this.getNode(refs.get(i));
+    			if(curr == null)
+    			    continue;
+    			else {
+    			    double distance = calcDistance(curr.getLatitude(), curr.getLongitude(),
+    				    prev.getLatitude(), prev.getLongitude());
+//    			    System.out.println(distance);
+//    			    System.out.println(numEdge);
+//    			    numEdge++;
+
+    			    GraphEdge edge = new GraphEdge(prev, curr, distance);
+    			    prev.addEdge(edge);
+    			    curr.addEdge(edge);
+    			}
+    		    }	
+    		}
+    	    }
+    	}
     }
 }

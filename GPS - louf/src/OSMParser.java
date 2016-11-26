@@ -104,6 +104,7 @@ class OSMParser {
          * Method called by SAX parser when end of document is encountered.
          */
         public void endDocument() {
+            map.createEdges();
             System.out.println("endDocument");
         }
 

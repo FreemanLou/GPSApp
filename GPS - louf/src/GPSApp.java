@@ -13,6 +13,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.io.*;
 
+import com.starkeffect.highway.*;
+
 public class GPSApp{
     private OSMParser parser;
     private Map map;
@@ -52,7 +54,8 @@ public class GPSApp{
     }
     
     public static void main(String[] args) throws Exception {
-	File f = new File("district_of_columbia.osm");
+	File f = new File("usb.osm");
 	GPSApp demo = new GPSApp(f);
+	//GPSDevice device = new GPSDevice();
     }
 }
