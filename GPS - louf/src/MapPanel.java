@@ -130,7 +130,10 @@ public class MapPanel extends JPanel implements ComponentListener {
 		    if (settingEndWayPoint) {
 			Point p = event.getPoint();
 			endWayPoint = convertToCoordinate(p.getX(), p.getY());
-
+			
+			GPSNode closeset = map.getClosestNode(endWayPoint.getY(), endWayPoint.getX());
+			
+			endWayPoint.setLocation(closeset.getLongitude(), closeset.getLatitude());
 			// Distance test
 			// System.out.println(map.calcDistance(startWayPoint.getY(),
 			// startWayPoint.getX(),
@@ -147,6 +150,10 @@ public class MapPanel extends JPanel implements ComponentListener {
 			System.out.println(p.getX() + " " + p.getY());
 
 			startWayPoint = convertToCoordinate(p.getX(), p.getY());
+			
+			GPSNode closeset = map.getClosestNode(startWayPoint.getY(), startWayPoint.getX());
+			startWayPoint.setLocation(closeset.getLongitude(), closeset.getLatitude());
+			
 			settingStartWayPoint = false;
 			settingEndWayPoint = true;
 			repaint();
@@ -225,10 +232,13 @@ public class MapPanel extends JPanel implements ComponentListener {
 		// Buildings get smallest stroke
 		g2.setStroke(new BasicStroke(1));
 		g2.setColor(Color.pink);
-	    } else // if (w.isBoundary()) { // Remove boundary
-		g2.setColor(Color.red);
-		//continue;
-	    //}
+	    } else if (w.isBoundary()) { // Remove boundary
+		g2.setStroke(new BasicStroke(1));
+		g2.setColor(Color.BLACK);
+	    } else {
+		g2.setStroke(new BasicStroke(1));
+		g2.setColor(Color.pink);
+	    }
 
 	    // Set anti-aliasing
 	    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
