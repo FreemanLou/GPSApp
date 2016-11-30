@@ -38,6 +38,9 @@ public class MapPanel extends JPanel implements ComponentListener {
     // Drag start point
     private Point startPoint;
 
+    // Keeps track if dragging actually occured
+    private boolean dragged;
+    
     private double scaleFactorA;
 
     private double scaleFactorB;
@@ -75,12 +78,14 @@ public class MapPanel extends JPanel implements ComponentListener {
 	centX = getWidth() / 2.0;
 	centY = getHeight() / 2.0;
 
+	dragged = false;
+	
 	scaleFactorA = 6500;
 
 	zoomFactor = 1;
 
 	drawWayPoints = true;
-	settingStartWayPoint = true;
+	settingStartWayPoint = false;
 	settingEndWayPoint = false;
 	startWayPoint = null;
 	endWayPoint = null;
@@ -124,14 +129,20 @@ public class MapPanel extends JPanel implements ComponentListener {
 	addMouseListener(new MouseAdapter() {
 	    @Override
 	    public void mousePressed(MouseEvent event) {
-		if (event != null) {
-		    startPoint = event.getPoint();
+		startPoint = event.getPoint();
+		dragged = false;
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent event) {
+		if (dragged == false) {
 		    // Convert point to coordinates
 		    if (settingEndWayPoint) {
-			Point p = event.getPoint();
+			//Point p = event.getPoint();
+			Point p = startPoint;
 			endWayPoint = convertToCoordinate(p.getX(), p.getY());
 			
-			GPSNode closeset = map.getClosestNode(endWayPoint.getY(), endWayPoint.getX());
+			GPSNode closeset = map.getClosestNodeOnRoad(endWayPoint.getY(), endWayPoint.getX());
 			
 			endWayPoint.setLocation(closeset.getLongitude(), closeset.getLatitude());
 			// Distance test
@@ -146,23 +157,19 @@ public class MapPanel extends JPanel implements ComponentListener {
 		    if (settingStartWayPoint) {
 			System.out.println("Received screen coords");
 
-			Point p = event.getPoint();
+			Point p = startPoint;
 			System.out.println(p.getX() + " " + p.getY());
 
 			startWayPoint = convertToCoordinate(p.getX(), p.getY());
 			
-			GPSNode closeset = map.getClosestNode(startWayPoint.getY(), startWayPoint.getX());
+			GPSNode closeset = map.getClosestNodeOnRoad(startWayPoint.getY(), startWayPoint.getX());
 			startWayPoint.setLocation(closeset.getLongitude(), closeset.getLatitude());
 			
 			settingStartWayPoint = false;
-			settingEndWayPoint = true;
+			//settingEndWayPoint = true;
 			repaint();
 		    }
 		}
-	    }
-
-	    @Override
-	    public void mouseReleased(MouseEvent event) {
 		startPoint = null;
 	    }
 	});
@@ -170,6 +177,7 @@ public class MapPanel extends JPanel implements ComponentListener {
 	this.addMouseMotionListener(new MouseMotionAdapter() {
 	    @Override
 	    public void mouseDragged(MouseEvent event) {
+		dragged = true;
 		Point dragPoint = event.getPoint();
 		double startX = startPoint.getX();
 		double startY = startPoint.getY();
@@ -178,10 +186,10 @@ public class MapPanel extends JPanel implements ComponentListener {
 
 		double dx = dragX - startX;
 		double dLon = dx / scaleFactorA;
-		centLon += dLon;
+		centLon -= dLon;
 		double dy = dragY - startY;
 		double dLat = dy / scaleFactorB;
-		centLat -= dLat;
+		centLat += dLat;
 
 		startPoint = dragPoint;
 
@@ -206,7 +214,43 @@ public class MapPanel extends JPanel implements ComponentListener {
 	});
     }
 
-    /*
+    /**
+     * If true, then the user click will set a start point
+     * Exclusive with setEndPoint
+     * @param option
+     */
+    public void setStart(boolean option) {
+	settingStartWayPoint = option;
+	settingEndWayPoint = !option;
+    }
+    
+    /**
+     * Clears existing start point
+     */
+    public void clearStartPoint() {
+	startWayPoint = null;
+	repaint();
+    }
+    
+    /**
+     * Clears existing end point
+     */
+    public void clearEndPoint() {
+	endWayPoint = null;
+	repaint();
+    }
+    
+    /**
+     * 
+     * @param option
+     */
+    public void setEnd(boolean option) {
+	settingEndWayPoint = option;
+	settingStartWayPoint = !option;
+    }
+    
+    
+    /**
      * Draws map
      */
     @Override
@@ -272,17 +316,16 @@ public class MapPanel extends JPanel implements ComponentListener {
 	}
 
 	if (drawWayPoints) {
+	    g2.setColor(Color.red);
 	    if (startWayPoint != null) {
 		Point2D.Double p = convertToPoint(startWayPoint.getY(),
 			startWayPoint.getX());
-		// g2.drawOval((int)p.getX(), (int)p.getY(), 10, 10);
 		g2.fillOval((int) p.getX(), (int) p.getY(), 10, 10);
 	    }
 
 	    if (endWayPoint != null) {
 		Point2D.Double p = convertToPoint(endWayPoint.getY(),
 			endWayPoint.getX());
-		// g2.drawOval((int)p.getX(), (int)p.getY(), 10, 10);
 		g2.fillOval((int) p.getX(), (int) p.getY(), 10, 10);
 
 	    }

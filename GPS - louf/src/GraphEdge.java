@@ -49,4 +49,14 @@ public class GraphEdge {
     public GraphNode getVertexB() {
 	return vertexB;
     }
+    
+    /**
+     * Get other node
+     */
+    public GraphNode getOtherNode(GraphNode a) {
+	if(a != null && (a == vertexA || a == vertexB))
+	    return a == vertexA? vertexA : vertexB;
+	else
+	    return null;
+    }
 }

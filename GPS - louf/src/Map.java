@@ -11,6 +11,8 @@ public class Map implements Graph {
     private HashMap<String, Way> ways;		// Id and way
     private HashMap<String, Relation> relations; // Id and relation
     
+    private HashSet<GraphNode> drivableNodes;
+    
     private double minLat;
     private double maxLat;
     private double minLon;
@@ -21,6 +23,8 @@ public class Map implements Graph {
     	nodes = new HashMap<String, GPSNode>();
     	ways = new HashMap<String, Way>();
     	relations = new HashMap<String, Relation>();
+    	
+    	drivableNodes = new HashSet<GraphNode>();
     }
     
     /**
@@ -135,7 +139,27 @@ public class Map implements Graph {
      */
     @Override
     public ArrayList<GraphEdge> getRoute(GraphNode a, GraphNode b) {
-    	return null;
+    	HashMap<GraphNode, Double> distances = new HashMap<GraphNode, Double>();
+    	HashMap<GraphNode, GraphNode> predecessor = new HashMap<GraphNode, GraphNode>();
+    	HashSet<GraphNode> visited = new HashSet<GraphNode>();
+	
+    	//Initialize distances, predecessor, and visited
+    	for(GraphNode g : drivableNodes) {
+    	    distances.put(g, Double.MAX_VALUE);
+    	    predecessor.put(g, null);
+    	}
+    	
+    	//Put starting node
+    	distances.put(a, 0.0);
+    	
+    	GraphNode min = null;
+    	
+    	
+    	
+    	
+    	//Backtrack to build route
+    	
+	return null;
     }
     
     /**
@@ -162,6 +186,46 @@ public class Map implements Graph {
 		}
 	
 		return closest;
+    }
+    
+    /**
+     * Returns closest node that is part of a drivable Way
+     * 
+     * @param lat
+     * @param lon
+     * @return GPSNode
+     */
+    public GPSNode getClosestNodeOnRoad(double lat, double lon) {
+	GPSNode closest = null;
+	double min = Double.MAX_VALUE;
+	
+	Set<String> wayList = ways.keySet();
+	for(String str : wayList) {
+	    Way way = ways.get(str);
+	    if(way != null && way.canDrive()) {
+		ArrayList<String> refs = way.getRefs();
+		if(refs != null && refs.size() > 0) {
+		    for(String ref: refs) {
+			GPSNode node = (GPSNode) getNode(ref);
+			
+			if(node == null)
+			    continue;
+			
+			double nodeLat = node.getLatitude();
+			double nodeLon = node.getLongitude();
+			    
+			double dist = calcDistance(lat, lon, nodeLat, nodeLon);
+			    
+			if(dist < min) {
+			    min = dist;
+			    closest = node;
+			}
+		    }
+		}
+	    }
+	}
+	
+	return closest;
     }
     
     /**
@@ -204,7 +268,8 @@ public class Map implements Graph {
     			
     		if(refs.size() > 0) {
     		    GPSNode prev = (GPSNode) this.getNode(refs.get(0));
-    				
+    		    drivableNodes.add(prev);
+    		    
     		    GPSNode curr = null;
     		    for(int i = 1; i <refs.size(); i++) {
     			curr = (GPSNode) this.getNode(refs.get(i));
@@ -220,6 +285,8 @@ public class Map implements Graph {
     			    GraphEdge edge = new GraphEdge(prev, curr, distance);
     			    prev.addEdge(edge);
     			    curr.addEdge(edge);
+    			    
+    			    drivableNodes.add(curr);
     			}
     		    }	
     		}
