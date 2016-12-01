@@ -181,4 +181,18 @@ public class Way extends GPSObject implements Comparable<Way>{
 	
 	return true;
     }
+    
+    public boolean isWaterWay() {
+	String value = this.getTag("waterway");
+
+	if(value == null)
+	    return false;
+	
+	return true;
+    }
+    
+    public boolean isNatural() {
+	String value = this.getTag("natural");
+	return value == null ? false : true; 
+    }
 }

@@ -95,12 +95,14 @@ public class GPSApp{
 	    }
 	});
 	
-	getDirections = new JButton("Compute Direction");
+	getDirections = new JButton("Show Direction");
 	getDirections.addActionListener(new ActionListener(){
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		if(!mapPanel.bothPointsSet()) {
 		    JOptionPane.showMessageDialog(mainFrame, "Both waypoints are not set");
+		} else {
+		    mapPanel.setShowRoute(true);
 		}
 	    }
 	    

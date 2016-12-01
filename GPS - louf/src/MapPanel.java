@@ -175,7 +175,6 @@ public class MapPanel extends JPanel implements ComponentListener {
 			    GPSNode end = map.getClosestNodeOnRoad(endWayPoint.getY(), endWayPoint.getX());
 			    
 			    route = map.getRoute(start, end);
-			    showRoute = true;
 			} 
 			
 			repaint();
@@ -364,9 +363,15 @@ public class MapPanel extends JPanel implements ComponentListener {
 		// Buildings get smallest stroke
 		g2.setStroke(new BasicStroke(1));
 		g2.setColor(Color.pink);
-	    } else if (w.isBoundary()) { // Remove boundary
+	    } else if (w.isBoundary()) {
 		g2.setStroke(new BasicStroke(1));
 		g2.setColor(Color.BLACK);
+	    } else if (w.isWaterWay()) {
+		g2.setStroke(new BasicStroke(7));
+		g2.setColor(Color.blue);
+	    } else if(w.isNatural()) {
+		g2.setStroke(new BasicStroke(2));
+		g2.setColor(new Color(222,184,135));
 	    } else {
 		g2.setStroke(new BasicStroke(1));
 		g2.setColor(Color.pink);
