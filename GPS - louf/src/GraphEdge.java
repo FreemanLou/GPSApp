@@ -54,8 +54,8 @@ public class GraphEdge {
      * Get other node
      */
     public GraphNode getOtherNode(GraphNode a) {
-	if(a != null && (a == vertexA || a == vertexB))
-	    return a == vertexA? vertexA : vertexB;
+	if(a != null && (a.equals(vertexA) || a.equals(vertexB)))
+	    return a.equals(vertexA) ? vertexB : vertexA;
 	else
 	    return null;
     }

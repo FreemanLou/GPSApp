@@ -18,6 +18,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.swing.JPanel;
 
@@ -34,6 +35,11 @@ public class MapPanel extends JPanel implements ComponentListener {
     private HashMap<String, Double> widthMap;
 
     private HashMap<String, Color> colorMap;
+    
+    //Used to store computation result
+    private ArrayList<GraphEdge> route;
+    //private ArrayList<GraphNode> route;
+    
 
     // Drag start point
     private Point startPoint;
@@ -60,12 +66,17 @@ public class MapPanel extends JPanel implements ComponentListener {
     private boolean settingStartWayPoint;
 
     private boolean settingEndWayPoint;
+    
+    private boolean showRoute;
 
     // Map Coordinate of start point
     private Point2D.Double startWayPoint;
 
     // Map Coordinate of end point
     private Point2D.Double endWayPoint;
+    
+    // Closest point to cursor
+    private Point2D.Double closestPoint;
 
     public MapPanel(Map map) {
 	super();
@@ -89,6 +100,11 @@ public class MapPanel extends JPanel implements ComponentListener {
 	settingEndWayPoint = false;
 	startWayPoint = null;
 	endWayPoint = null;
+	
+	closestPoint = null;
+	
+	route = null;
+	showRoute = false;
 
 	this.setOpaque(true);
 	this.setBackground(Color.WHITE);
@@ -110,9 +126,11 @@ public class MapPanel extends JPanel implements ComponentListener {
 	widthMap.put("motorway", 7.0);
 	widthMap.put("motorway_link", 3.5);
 	widthMap.put("trunk_link", 2.5);
+	widthMap.put("service", 2.0);
 
 	colorMap.put("residential", Color.lightGray);
 	colorMap.put("unclassified", Color.lightGray);
+	colorMap.put("service", Color.lightGray);
 	colorMap.put("primary", Color.ORANGE);
 	colorMap.put("primary_link", Color.ORANGE);
 	colorMap.put("secondary", Color.lightGray);
@@ -151,6 +169,15 @@ public class MapPanel extends JPanel implements ComponentListener {
 			// endWayPoint.getY(), endWayPoint.getX()));
 
 			settingEndWayPoint = false;
+			
+			if(bothPointsSet()) {
+			    GPSNode start = map.getClosestNodeOnRoad(startWayPoint.getY(), startWayPoint.getX());
+			    GPSNode end = map.getClosestNodeOnRoad(endWayPoint.getY(), endWayPoint.getX());
+			    
+			    route = map.getRoute(start, end);
+			    showRoute = true;
+			} 
+			
 			repaint();
 		    }
 
@@ -194,6 +221,18 @@ public class MapPanel extends JPanel implements ComponentListener {
 		startPoint = dragPoint;
 
 		repaint();
+	    }
+
+	    @Override
+	    public void mouseMoved(MouseEvent event) {
+		if(settingStartWayPoint || settingEndWayPoint) {
+		    Point hoverPoint = event.getPoint();
+		    closestPoint = convertToCoordinate(hoverPoint.getX(), hoverPoint.getY());
+
+		    GPSNode closestNode = map.getClosestNodeOnRoad(closestPoint.getY(), closestPoint.getX());
+		    closestPoint.setLocation(closestNode.getLongitude(), closestNode.getLatitude());
+		    repaint();
+		}
 	    }
 
 	});
@@ -241,6 +280,18 @@ public class MapPanel extends JPanel implements ComponentListener {
     }
     
     /**
+     * Checks to see that both the start and end points are set
+     * so that route computation can start
+     * 
+     * @return true if both are set, false other wise
+     */
+    public boolean bothPointsSet(){
+	return startWayPoint != null && 
+		endWayPoint != null;
+    }
+    
+    /**
+     * Choose whether to set the end point
      * 
      * @param option
      */
@@ -249,6 +300,15 @@ public class MapPanel extends JPanel implements ComponentListener {
 	settingStartWayPoint = !option;
     }
     
+    /**
+     * Choose whether to show route
+     * 
+     * @param show
+     */
+    public void setShowRoute(boolean show) {
+	showRoute = show;
+	repaint();
+    }
     
     /**
      * Draws map
@@ -258,6 +318,34 @@ public class MapPanel extends JPanel implements ComponentListener {
 	super.paintComponent(g);
 	Graphics2D g2 = (Graphics2D) g;
 
+//	THIS BLOCK OF CODE DISPLAYS THE RAW DRIVABLE NODES AND EDGES
+//	USED FOR TESTING
+//
+//	HashSet<GraphNode> drivableNodes = map.drivableNodes;
+//	
+//	for(GraphNode n : drivableNodes) {
+//	    GPSNode node = (GPSNode) n;
+//	    Point2D.Double p = convertToPoint(node.getLatitude(), node.getLongitude());
+//	    g2.fillOval((int) p.getX(), (int) p.getY(), 10, 10);
+//	    
+//	    ArrayList<GraphEdge> edges = n.getEdges();
+//
+//	    for(GraphEdge e : edges) {
+//		GPSNode prev = (GPSNode) e.getVertexA();
+//		GPSNode curr = (GPSNode) e.getVertexB();
+//
+//		Point2D.Double prevCoord = convertToPoint(
+//				prev.getLatitude(), prev.getLongitude());
+//
+//		Point2D.Double currCoord = convertToPoint(
+//			curr.getLatitude(), curr.getLongitude());
+//
+//		g2.drawLine((int) prevCoord.getX(),
+//			(int) prevCoord.getY(), (int) currCoord.getX(),
+//			(int) currCoord.getY());
+//	    }
+//	}
+	
 	HashMap<String, Way> ways = map.getWays();
 	for (Way w : ways.values()) {
 	    /**
@@ -315,6 +403,15 @@ public class MapPanel extends JPanel implements ComponentListener {
 	    }
 	}
 
+	if (settingStartWayPoint || settingEndWayPoint) {
+	    g2.setColor(Color.green);
+	    if(closestPoint != null) {
+		Point2D.Double p = convertToPoint(closestPoint.getY(),
+			closestPoint.getX());
+		g2.fillOval((int) p.getX(), (int) p.getY(), 10, 10);
+	    }
+	}
+	
 	if (drawWayPoints) {
 	    g2.setColor(Color.red);
 	    if (startWayPoint != null) {
@@ -328,6 +425,20 @@ public class MapPanel extends JPanel implements ComponentListener {
 			endWayPoint.getX());
 		g2.fillOval((int) p.getX(), (int) p.getY(), 10, 10);
 
+	    }
+	}
+	
+	if(showRoute && route != null) {
+	    g2.setColor(Color.yellow);
+	    for(GraphEdge e : route) {
+		GPSNode a = (GPSNode) e.getVertexA();
+		Point2D.Double aPoint = convertToPoint(a.getLatitude(), a.getLongitude());
+		
+		GPSNode b = (GPSNode) e.getVertexB();
+		Point2D.Double bPoint = convertToPoint(b.getLatitude(), b.getLongitude());
+
+		g2.drawLine((int)aPoint.getX(), (int)aPoint.getY(), 
+			(int)bPoint.getX(), (int)bPoint.getY());
 	    }
 	}
     }

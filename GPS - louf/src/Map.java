@@ -140,8 +140,10 @@ public class Map implements Graph {
     @Override
     public ArrayList<GraphEdge> getRoute(GraphNode a, GraphNode b) {
     	HashMap<GraphNode, Double> distances = new HashMap<GraphNode, Double>();
-    	HashMap<GraphNode, GraphNode> predecessor = new HashMap<GraphNode, GraphNode>();
+    	HashMap<GraphNode, GraphEdge> predecessor = new HashMap<GraphNode, GraphEdge>();
     	HashSet<GraphNode> visited = new HashSet<GraphNode>();
+    	
+    	ArrayList<GraphEdge> result = new ArrayList<GraphEdge>();
 	
     	//Initialize distances, predecessor, and visited
     	for(GraphNode g : drivableNodes) {
@@ -149,17 +151,92 @@ public class Map implements Graph {
     	    predecessor.put(g, null);
     	}
     	
+    	int remaining = drivableNodes.size();
+    	
     	//Put starting node
     	distances.put(a, 0.0);
+    	//predecessor.put(a, null);
     	
-    	GraphNode min = null;
-    	
-    	
-    	
+    	//Main loop
+    	while(remaining > 0) {
+    	    GraphNode closest = null;
+    	    double minDist = Double.MAX_VALUE;
+
+    	    for(GraphNode n : distances.keySet()) {
+    		double dist = distances.get(n);
+    		if(!visited.contains(n) &&
+    			dist != Double.MAX_VALUE &&
+    			(minDist == Double.MAX_VALUE || dist < minDist)) {
+    		    closest = n;
+    		    minDist = dist;
+    		}
+    	    }
+    	    
+    	    if(closest == null)
+    		return null;
+    	    
+    	    if(closest.equals(b))
+    		break;
+    	    
+    	    visited.add(closest);
+    	    
+    	    for(GraphEdge edge : closest.getEdges()) {
+    		GraphNode adjacent = edge.getOtherNode(closest);
+    		if(adjacent != null && !visited.contains(adjacent)) {
+    		    //Map distance value for the other Node
+    		    double otherDist = distances.get(adjacent);
+    		    //Weight of edge from closest node to adjacent node
+    		    double weight = edge.getWeight();
+
+    		    if(otherDist == Double.MAX_VALUE ||
+    			    weight + minDist < otherDist) {
+    			distances.put(adjacent, weight + minDist);
+    			predecessor.put(adjacent, edge);
+    		    }
+    		}
+    	    }
+
+    	    remaining--;
+    	}
     	
     	//Backtrack to build route
+    	if(distances.get(b) == Double.MAX_VALUE) {
+    	    return null;
+    	} else {
+    	    buildPath(predecessor, a, b, result);
+    	}
     	
-	return null;
+	return result;
+    }
+    
+    /**
+     * Recursively goes through predecessor map to create a route list
+     * 
+     * @param pred
+     * @param start
+     * @param nextToCheck
+     * @param result
+     * @return
+     */
+    private boolean buildPath(HashMap<GraphNode, GraphEdge> pred,
+	    GraphNode start, GraphNode nextToCheck, ArrayList<GraphEdge> result) {
+	if(nextToCheck.equals(start)) {
+	    return true;
+	}
+	
+	GraphEdge previousEdge = pred.get(nextToCheck);
+	
+	if(previousEdge == null)
+	    return false;
+
+	GraphNode otherNode = previousEdge.getOtherNode(nextToCheck);
+	
+	if(buildPath(pred, start, otherNode, result)) {
+	    result.add(previousEdge);
+	} else
+	    return false;
+	
+	return true;
     }
     
     /**
@@ -287,6 +364,7 @@ public class Map implements Graph {
     			    curr.addEdge(edge);
     			    
     			    drivableNodes.add(curr);
+    			    prev = curr;
     			}
     		    }	
     		}

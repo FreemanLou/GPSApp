@@ -50,6 +50,16 @@ public abstract class GPSObject {
     }
     
     /**
+     * Computes hashcode based on id string
+     * 
+     * @return hashCode
+     */
+    @Override
+    public int hashCode() {
+	return id.hashCode();
+    }
+    
+    /**
      * @param the tags to set
      */
     public void addTag(String key, String value) {

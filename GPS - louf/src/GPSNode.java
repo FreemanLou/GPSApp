@@ -44,7 +44,7 @@ public class GPSNode extends GPSObject implements GraphNode {
     @Override
     public int hashCode() {
 	final int prime = 31;
-	int result = 1;
+	int result = super.hashCode();
 	long temp;
 	temp = Double.doubleToLongBits(latitude);
 	result = prime * result + (int) (temp ^ (temp >>> 32));

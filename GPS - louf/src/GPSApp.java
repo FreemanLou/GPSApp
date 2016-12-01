@@ -11,6 +11,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -73,7 +74,7 @@ public class GPSApp{
 	
 	//Build side panel
 	sidePanel = new JPanel();
-	sidePanel.setPreferredSize(new Dimension(120, 650));
+	sidePanel.setPreferredSize(new Dimension(150, 650));
 	sidePanel.setLayout(new GridLayout(4, 1));
 
 	setStart = new JButton("Set Start Point");
@@ -95,19 +96,33 @@ public class GPSApp{
 	});
 	
 	getDirections = new JButton("Compute Direction");
+	getDirections.addActionListener(new ActionListener(){
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		if(!mapPanel.bothPointsSet()) {
+		    JOptionPane.showMessageDialog(mainFrame, "Both waypoints are not set");
+		}
+	    }
+	    
+	});
+	
 	startNav = new JButton("Start Navigation");
-
+	startNav.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	    }
+	});
+	
 	sidePanel.add(setStart);
 	sidePanel.add(setEnd);
 	sidePanel.add(getDirections);
 	sidePanel.add(startNav);
-	
-	
-	
+
 	content.add(sidePanel, BorderLayout.WEST);
 	sidePanel.setVisible(false);;
 
-	
 	//Build menu bar
 	menuBar = new JMenuBar();
 	mainFrame.setJMenuBar(menuBar);

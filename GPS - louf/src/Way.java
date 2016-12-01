@@ -28,6 +28,7 @@ public class Way extends GPSObject implements Comparable<Way>{
 	validRoads.add("primary_link");
 	validRoads.add("secondary_link");
 	validRoads.add("tertiary_link");
+	validRoads.add("service");
     }
     
     /**
