@@ -94,7 +94,7 @@ public class GPSApp{
 		mapPanel.setEnd(true);
 	    }
 	});
-	
+
 	getDirections = new JButton("Show Direction");
 	getDirections.addActionListener(new ActionListener(){
 	    @Override
@@ -102,7 +102,11 @@ public class GPSApp{
 		if(!mapPanel.bothPointsSet()) {
 		    JOptionPane.showMessageDialog(mainFrame, "Both waypoints are not set");
 		} else {
-		    mapPanel.setShowRoute(true);
+		    boolean valid = mapPanel.getRoute();
+		    if(!valid)
+			JOptionPane.showMessageDialog(mainFrame, "Could not get route");
+		    else
+			mapPanel.setShowRoute(true);
 		}
 	    }
 	    

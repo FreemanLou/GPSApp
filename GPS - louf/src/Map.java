@@ -203,7 +203,19 @@ public class Map implements Graph {
     	if(distances.get(b) == Double.MAX_VALUE) {
     	    return null;
     	} else {
-    	    buildPath(predecessor, a, b, result);
+    	    //buildPath(predecessor, a, b, result);
+    	    //Non recursive version
+    	    Stack<GraphEdge> stack = new Stack<GraphEdge>(); 
+    	    while(!b.equals(a)) {
+    		GraphEdge edge = predecessor.get(b);
+    		stack.push(edge);
+    		b = edge.getOtherNode(b);
+    	    }
+    	    
+    	    while(!stack.isEmpty()) {
+    		GraphEdge edge = stack.pop();
+    		result.add(edge);
+    	    }
     	}
     	
 	return result;
@@ -350,7 +362,7 @@ public class Map implements Graph {
     		    GPSNode curr = null;
     		    for(int i = 1; i <refs.size(); i++) {
     			curr = (GPSNode) this.getNode(refs.get(i));
-    			if(curr == null)
+    			if(curr == null || prev == null)
     			    continue;
     			else {
     			    double distance = calcDistance(curr.getLatitude(), curr.getLongitude(),

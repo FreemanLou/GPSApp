@@ -170,13 +170,6 @@ public class MapPanel extends JPanel implements ComponentListener {
 
 			settingEndWayPoint = false;
 			
-			if(bothPointsSet()) {
-			    GPSNode start = map.getClosestNodeOnRoad(startWayPoint.getY(), startWayPoint.getX());
-			    GPSNode end = map.getClosestNodeOnRoad(endWayPoint.getY(), endWayPoint.getX());
-			    
-			    route = map.getRoute(start, end);
-			} 
-			
 			repaint();
 		    }
 
@@ -307,6 +300,22 @@ public class MapPanel extends JPanel implements ComponentListener {
     public void setShowRoute(boolean show) {
 	showRoute = show;
 	repaint();
+    }
+    
+    /**
+     * Gets route from map
+     * 
+     * @return true if valid route was returned, false otherwise
+     */
+    public boolean getRoute() {
+	if(bothPointsSet()) {
+	    GPSNode start = map.getClosestNodeOnRoad(startWayPoint.getY(), startWayPoint.getX());
+	    GPSNode end = map.getClosestNodeOnRoad(endWayPoint.getY(), endWayPoint.getX());
+	    
+	    route = map.getRoute(start, end);
+	    return route == null ? false : true;
+	}
+	return false;
     }
     
     /**
