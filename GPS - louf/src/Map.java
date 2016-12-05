@@ -1,3 +1,4 @@
+import java.awt.geom.Point2D;
 import java.util.*;
 /**
  * Object representing a map and also
@@ -17,7 +18,8 @@ public class Map implements Graph {
     private double maxLat;
     private double minLon;
     private double maxLon;
-
+    
+    private Point2D.Double userLocation;
     
     public Map() {
     	nodes = new HashMap<String, GPSNode>();
@@ -25,6 +27,8 @@ public class Map implements Graph {
     	relations = new HashMap<String, Relation>();
     	
     	drivableNodes = new HashSet<GraphNode>();
+    	
+    	userLocation = null;
     }
     
     /**
@@ -84,6 +88,25 @@ public class Map implements Graph {
     }
 
     /**
+     * Update the user location. Meant to be called by tracker
+     * @param lat
+     * @param lon
+     */
+    public void setUserLocation(double lat, double lon) {
+	userLocation = new Point2D.Double(lon,lat);
+    }
+    
+    /**
+     * Returns user location
+     * @return Point2D.Double
+     */
+    public Point2D.Double getUserLocation() {
+	if(userLocation == null)
+	    return null;
+	return new Point2D.Double(userLocation.getX(), userLocation.getY());
+    }
+    
+    /**
      * Adds a node
      */
     public void addNode(String key, GPSNode value) {
@@ -119,13 +142,26 @@ public class Map implements Graph {
     }
     
     /**
+     * Retrieves the HashMap containing all the ways
+     * 
      * @return the ways
      */
     public HashMap<String, Way> getWays() {
         return ways;
     }
+    
+    /**
+     * Searches for a way given a key
+     * 
+     * @return way corresponding to key
+     */
+    public Way getWay(String key) {
+	return ways.get(key);
+    }
 
     /**
+     * Retrieves HashMap containing all the relations
+     * 
      * @return the relations
      */
     public HashMap<String, Relation> getRelations() {
@@ -187,11 +223,16 @@ public class Map implements Graph {
     		    double otherDist = distances.get(adjacent);
     		    //Weight of edge from closest node to adjacent node
     		    double weight = edge.getWeight();
-
+    		    String way = edge.getWay();
+    		    
     		    if(otherDist == Double.MAX_VALUE ||
     			    weight + minDist < otherDist) {
     			distances.put(adjacent, weight + minDist);
-    			predecessor.put(adjacent, edge);
+    			
+    			//Make new edge in correct order
+    			GraphEdge corrected = new GraphEdge(closest, adjacent, weight, way);
+    			
+    			predecessor.put(adjacent, corrected);
     		    }
     		}
     	    }
@@ -208,8 +249,14 @@ public class Map implements Graph {
     	    Stack<GraphEdge> stack = new Stack<GraphEdge>(); 
     	    while(!b.equals(a)) {
     		GraphEdge edge = predecessor.get(b);
+    		
+    		//Make sure vertices are in correct order
+    		GraphNode start = edge.getOtherNode(b);
+    		//double weight = edge.getWeight();
+    		//GraphEdge corrected = new GraphEdge(start, b, weight);
+    		
     		stack.push(edge);
-    		b = edge.getOtherNode(b);
+    		b = start;
     	    }
     	    
     	    while(!stack.isEmpty()) {
@@ -232,7 +279,7 @@ public class Map implements Graph {
      */
     private boolean buildPath(HashMap<GraphNode, GraphEdge> pred,
 	    GraphNode start, GraphNode nextToCheck, ArrayList<GraphEdge> result) {
-	if(nextToCheck.equals(start)) {
+	if(nextToCheck.equals(start)	) {
 	    return true;
 	}
 	
@@ -344,6 +391,19 @@ public class Map implements Graph {
     }
     
     /**
+     * Calculates the bearing between two points
+     * 
+     * @return double bearing
+     */
+    public static double calcBearing(double lat1, double lon1, double lat2, double lon2) {
+	double x = Math.sin(lon2 - lon1) * Math.cos(lat2);
+	double y = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) *
+		Math.cos(lat2) * Math.cos(lon2 - lon1);
+	
+	return ((Math.toDegrees(Math.atan2(x,y)) + 360) % 360);
+    }
+    
+    /**
      * Creates edges by calculating distance and adding to the 
      * relevant nodes. Should only be called once after the entire
      * Map has been parsed.
@@ -371,7 +431,7 @@ public class Map implements Graph {
 //    			    System.out.println(numEdge);
 //    			    numEdge++;
 
-    			    GraphEdge edge = new GraphEdge(prev, curr, distance);
+    			    GraphEdge edge = new GraphEdge(prev, curr, distance, way.id);
     			    prev.addEdge(edge);
     			    curr.addEdge(edge);
     			    

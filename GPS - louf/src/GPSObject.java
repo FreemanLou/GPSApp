@@ -67,4 +67,13 @@ public abstract class GPSObject {
             return;
         tags.put(key, value);
     }
+    
+    /**
+     * Gets the name of the object, if there is one
+     * 
+     * @return String name if available, null otherwise
+     */
+    public String getName() {
+	return tags.get("name");
+    }
 }

@@ -14,6 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 
 import java.awt.BorderLayout;
@@ -45,24 +46,33 @@ public class GPSApp{
     private JButton startNav;
     
     private GPSDevice gpsDevice;
+    private Tracker tracker;
 
     private File mapFile;
     
     private MapPanel mapPanel;
     private JPanel sidePanel;
+    private JTextArea textPanel;
+    
+    private boolean validRoute;
     
     public GPSApp(File f) throws Exception {
 	mapFile = f;
 	gpsDevice = new GPSDevice(mapFile.getAbsolutePath());
 
-	buildFrame();
-    }
-    
-    private void buildFrame() throws Exception {
 	map = new Map();
 	parser = new OSMParser(mapFile, map);
 	parser.parse();
 
+	validRoute = false;
+	
+	buildFrame();
+	
+	tracker = new Tracker(this, mapPanel, map, textPanel);
+	gpsDevice.addGPSListener(tracker);
+    }
+    
+    private void buildFrame() throws Exception {
 	mainFrame = new JFrame("GPS App " + mapFile.getName());
 	Container content = mainFrame.getContentPane();
 	content.setLayout(new BorderLayout());
@@ -95,6 +105,15 @@ public class GPSApp{
 	    }
 	});
 
+	startNav = new JButton("Start Navigation");
+	startNav.setEnabled(false);
+	startNav.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent event) {
+		toggleStartNav();
+	    }
+	});
+
 	getDirections = new JButton("Show Direction");
 	getDirections.addActionListener(new ActionListener(){
 	    @Override
@@ -102,25 +121,20 @@ public class GPSApp{
 		if(!mapPanel.bothPointsSet()) {
 		    JOptionPane.showMessageDialog(mainFrame, "Both waypoints are not set");
 		} else {
-		    boolean valid = mapPanel.getRoute();
-		    if(!valid)
+		    ArrayList<GraphEdge> route = mapPanel.getRoute(false);
+		    if(route == null) {
 			JOptionPane.showMessageDialog(mainFrame, "Could not get route");
-		    else
+			startNav.setEnabled(false);
+		    } else {
 			mapPanel.setShowRoute(true);
+			tracker.setRoute(route, mapPanel.getEndPoint());
+			startNav.setEnabled(true);
+		    }	
 		}
 	    }
 	    
 	});
-	
-	startNav = new JButton("Start Navigation");
-	startNav.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	    }
-	});
-	
+
 	sidePanel.add(setStart);
 	sidePanel.add(setEnd);
 	sidePanel.add(getDirections);
@@ -128,6 +142,12 @@ public class GPSApp{
 
 	content.add(sidePanel, BorderLayout.WEST);
 	sidePanel.setVisible(false);;
+	
+	textPanel = new JTextArea();
+	textPanel.setPreferredSize(new Dimension(1000, 100));
+	
+	content.add(textPanel, BorderLayout.SOUTH);
+	textPanel.setVisible(false);
 
 	//Build menu bar
 	menuBar = new JMenuBar();
@@ -163,9 +183,9 @@ public class GPSApp{
 		    }
 		}
 	    }
-	});
+	});	
+	
 	fileMenu.add(menuItem);
-
 	mapMenu = new JMenu("Map");
 	menuBar.add(mapMenu);
 
@@ -175,12 +195,18 @@ public class GPSApp{
 	    public void actionPerformed(ActionEvent e) {
 		if(navigateMenuItem.isSelected()) {
 		    sidePanel.setVisible(true);
+		    textPanel.setVisible(true);
 		} else {
 		    sidePanel.setVisible(false);
+		    mapPanel.setShowRoute(false);
 		    mapPanel.clearStartPoint();
 		    mapPanel.clearEndPoint();
 		    mapPanel.setStart(false);
 		    mapPanel.setEnd(false);
+		    mapPanel.setTracking(false);
+		    
+		    textPanel.setVisible(false);
+		    tracker.setTracking(false);
 		}
 	    }	    
 	});
@@ -188,6 +214,28 @@ public class GPSApp{
 
 	mainFrame.pack();
 	mainFrame.setVisible(true);
+    }
+    
+    /**
+     * Handles the startNav button
+     */
+    public void toggleStartNav() {
+	if(!mapPanel.isTracking()) {	//Start navigation mode
+	    startNav.setText("Stop Navigation");
+	    tracker.setTracking(true);
+	    mapPanel.setTracking(true);
+	} else {			//Stop navigation mode
+	    startNav.setText("Start Navigation");
+	    tracker.setTracking(false);
+	    mapPanel.setTracking(false);
+	}
+    }
+    
+    /**
+     * Called to let the app respond to an off course event
+     */
+    public void notifyOffCourse() {
+	mapPanel.getRoute(true);
     }
     
     public static void main(String[] args) throws Exception {

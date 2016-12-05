@@ -99,16 +99,9 @@ public class Way extends GPSObject implements Comparable<Way>{
 	if (getClass() != obj.getClass())
 	    return false;
 	Way other = (Way) obj;
-	if (nodes == null) {
-	    if (other.nodes != null)
-		return false;
-	} else if (!nodes.equals(other.nodes))
+	if(!other.id.equals(this.id))
 	    return false;
-	if (refs == null) {
-	    if (other.refs != null)
-		return false;
-	} else if (!refs.equals(other.refs))
-	    return false;
+
 	return true;
     }
 
