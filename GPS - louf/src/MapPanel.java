@@ -468,8 +468,6 @@ public class MapPanel extends JPanel implements ComponentListener {
 	    g2.setColor(Color.green);
 	    if(closestPoint != null) {
 		convertToPointAndDraw(g2, closestPoint.getY(), closestPoint.getX());
-//		Point p = convertToPoint(closestPoint.getY(), closestPoint.getX());
-//		g2.fillOval((int)p.getX() - pointRadius, (int)p.getY() - pointRadius, pointRadius * 2, pointRadius * 2);
 	    }
 	}
 	
@@ -491,14 +489,10 @@ public class MapPanel extends JPanel implements ComponentListener {
 	    g2.setColor(Color.red);
 	    if (startWayPoint != null) {
 		convertToPointAndDraw(g2, startWayPoint.getY(), startWayPoint.getX());
-//		Point p = convertToPoint(startWayPoint.getY(), startWayPoint.getX());
-//		g2.fillOval((int) p.getX() - pointRadius, (int) p.getY() - pointRadius, pointRadius * 2, pointRadius * 2);
 	    }
 
 	    if (endWayPoint != null) {
 		convertToPointAndDraw(g2, endWayPoint.getY(), endWayPoint.getX());
-//		Point p = convertToPoint(endWayPoint.getY(), endWayPoint.getX());
-//		g2.fillOval((int) p.getX() - pointRadius, (int) p.getY() - pointRadius, pointRadius * 2, pointRadius * 2);
 	    }
 	}
 	
@@ -508,8 +502,6 @@ public class MapPanel extends JPanel implements ComponentListener {
 
 	    if(location != null) {
 		convertToPointAndDraw(g2, location.getY(), location.getX());
-//		Point locationOnPanel = convertToPoint(location.getY(), location.getX());
-//		g2.fillOval((int)locationOnPanel.getX() - pointRadius, (int)locationOnPanel.getY() - pointRadius, pointRadius * 2, pointRadius * 2);
 	    }
 	}
     }

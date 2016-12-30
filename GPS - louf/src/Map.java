@@ -409,7 +409,6 @@ public class Map implements Graph {
      * Map has been parsed.
      */
     public void createEdges() {
-	//int numEdge = 0;
     	for(String key : ways.keySet()) {
     	    Way way = ways.get(key);
     	    if(way.canDrive()) {
@@ -427,9 +426,6 @@ public class Map implements Graph {
     			else {
     			    double distance = calcDistance(curr.getLatitude(), curr.getLongitude(),
     				    prev.getLatitude(), prev.getLongitude());
-//    			    System.out.println(distance);
-//    			    System.out.println(numEdge);
-//    			    numEdge++;
 
     			    GraphEdge edge = new GraphEdge(prev, curr, distance, way.id);
     			    prev.addEdge(edge);

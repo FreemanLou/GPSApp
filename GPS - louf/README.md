@@ -8,3 +8,5 @@ The GPS program runs simultaneously with another GPSDevice which produces the mo
 The map has an underlying graph, which is created after the entire map has been parsed. The graph is composed of a Graph interface, GraphNode interface, and GraphEdge class. The GraphEdge has been implemented since while GPSNodes and implement the GraphNode, Ways represent entire roads, so the GraphEdge is used to break them up into smaller segments.
 
 MapPanel is the main display of the program. GPSApp contains other sections such as the selection menu and text box which has directions and more info.
+
+This program requires a private Java package to run.

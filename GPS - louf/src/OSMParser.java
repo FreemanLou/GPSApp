@@ -208,8 +208,6 @@ class OSMParser {
          */
         public void endElement(String namespaceURI, String localName,
                                String qName) throws SAXParseException {
-//            System.out.println("endElement: " + namespaceURI + ","
-//                               + localName + "," + qName);
         }
 
         /**
@@ -217,9 +215,7 @@ class OSMParser {
          */
         public void characters(char[] ch, int start, int length)
             throws SAXParseException {
-            // OSM files apparently do not have interesting CDATA.
-            //System.out.println("cdata(" + length + "): '"
-            //                 + new String(ch, start, length) + "'");
+
             cdata = (new String(ch, start, length)).trim();
         }
 

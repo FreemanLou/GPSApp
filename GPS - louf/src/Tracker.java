@@ -56,7 +56,6 @@ public class Tracker implements GPSListener {
      */
     public void setTracking(boolean tracking) {
 	this.tracking = tracking;
-//	textArea.append("\n" + route.toString());
     }
     
     /**
@@ -103,7 +102,6 @@ public class Tracker implements GPSListener {
 	double dist = map.calcDistance(userLoc.getY(), userLoc.getX(), 
 		finalPoint.getLatitude(), finalPoint.getLongitude());
 	
-	//System.out.println("Dist: " + dist + "m");
 	return dist < maxDist;
     }
     
@@ -135,9 +133,7 @@ public class Tracker implements GPSListener {
 	}
 
 	distance =  map.calcDistance(userLoc.getY(), userLoc.getX(), finalPoint.getLatitude(), finalPoint.getLongitude());;
-//	for(int i = index; i < route.size(); i++) {
-//	    distance += route.get(i).getWeight();
-//	}
+
 	textArea.append("\nTotal Distance left: " + distance + " meters");
     }
     
@@ -159,20 +155,6 @@ public class Tracker implements GPSListener {
 
 	    return true;
 	}
-//	Check bearing
-//	GPSNode a = (GPSNode) edge.getVertexA();
-//	GPSNode b = (GPSNode) edge.getVertexB();
-//		
-//	double bearing = Map.calcBearing(a.getLatitude(), a.getLongitude(), 
-//		b.getLatitude(), b.getLongitude());
-//	
-//	System.out.println("Expected bearing: " + bearing);
-//	System.out.println("Actual: " + heading);
-//
-//	if(bearing > heading + maxDeviation || bearing < heading - maxDeviation)
-//	    return false;
-	
-//	return true;
     }
     
     /**
